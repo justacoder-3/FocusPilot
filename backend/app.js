@@ -15,6 +15,6 @@ app.use(express.urlencoded({ extended:true }));
 app.use('/api/tasks', taskRoutes);
 
 // error handler
-app.use(errorHandler); 
+// app.use(errorHandler); 
 
 module.exports = app;

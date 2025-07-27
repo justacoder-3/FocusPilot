@@ -12,7 +12,7 @@ exports.createTask = async (req, res) => {
 };
 
 // getting all the tasks (read)
-exports.getTasks = async (req, res) => {
+exports.getTask = async (req, res) => {
     try {
         const tasks = await Task.find().sort({ createdAt: -1 });
         res.status(200).json(tasks);
@@ -23,7 +23,7 @@ exports.getTasks = async (req, res) => {
 };
 
 // updating the tasks (update)
-exports.updateTasks = async(req, res) => {
+exports.updateTask = async(req, res) => {
     try {
         const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!task) {
@@ -37,7 +37,7 @@ exports.updateTasks = async(req, res) => {
 };
 
 // deleting the tasks (delete)
-exports.deleteTask = async () => {
+exports.deleteTask = async (req, res) => {
     try {
     const task = await Task.findByIdAndDelete(req.params.id);
     if (!task) {
