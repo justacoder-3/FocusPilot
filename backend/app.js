@@ -1,24 +1,20 @@
-// setup
 const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const taskRoutes = require('./routes/taskRoutes.js');
+const errorHandler = require('./middlewares/errorHandler.js');
 
-// app connection
+dotenv.config();
+
 const app = express();
 
-// middleware to parse the data
-app.use(express.urlencoded({ extended: true }));
+// middleware required
+app.use(express.json());
+app.use(express.urlencoded({ extended:true }));
 
-// MONGODB connection connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MONGODB Connected"))
-  .catch(err => console.error("MONGODB error:", err));
+// routes
+app.use('/api/tasks', taskRoutes);
 
-app.get('/', (req, res) => {
-  res.send("working");
-});
+// error handler
+app.use(errorHandler); 
 
-// starting the server
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running on port ${process.env.PORT || 3000}`);
-});
+module.exports = app;
