@@ -1,4 +1,4 @@
-const focusSessionSchema = require('../models/focusSessionModel.js');
+const FocusSession = require('../models/focusSessionModel.js');
 
 // starting the session
 exports.startSession = async (req, res) => {
