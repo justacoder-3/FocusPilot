@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const taskRoutes = require('./routes/taskRoutes.js');
 const errorHandler = require('./middlewares/errorHandler.js');
 const authRoutes = require('./routes/authRoutes.js');
+const focusRoutes = require('./routes/focusRoutes.js');
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended:true }));
 // routes
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/focus', focusRoutes);
 
 // error handler
 // app.use(errorHandler); 
