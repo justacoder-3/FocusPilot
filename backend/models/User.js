@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+}, { timestamps: true });
 
 // ensures that the given password and salt are combined
 userSchema.pre('save', async function (next) {
