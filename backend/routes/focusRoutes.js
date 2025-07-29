@@ -3,6 +3,7 @@ const router = express.Router();
 const { isAuthenticated } = require('../middlewares/authMiddleware.js');
 const { startSession, endSession, getSessions } = require('../controllers/focusController.js');
 const { getStats } = require('../controllers/focusController.js');
+const { getTaskStats } = require('../controllers/taskController.js');
 
 router.use(isAuthenticated);
 
