@@ -22,6 +22,22 @@ exports.getTask = async (req, res) => {
     }
 };
 
+// getting a specific task
+exports.getSpecificTask = async (req, res) => {
+    try {
+        const specificTask = await Task.findById(req.params.id);
+
+        if (!specificTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.status(200).json(specificTask);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 // updating the tasks (update)
 exports.updateTask = async(req, res) => {
     try {
