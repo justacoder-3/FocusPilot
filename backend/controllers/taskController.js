@@ -3,7 +3,10 @@ const Task = require('../models/taskModel.js');
 // creating the task (create)
 exports.createTask = async (req, res) => {
     try {
-        const task = await Task.create(req.body);
+        const task = await Task.create({
+            ...req.body,
+            user: req.user._id
+        });
         res.status(201).json(task);
     }
     catch (err) {
@@ -14,7 +17,7 @@ exports.createTask = async (req, res) => {
 // getting all the tasks (read)
 exports.getTask = async (req, res) => {
     try {
-        const tasks = await Task.find().sort({ createdAt: -1 });
+        const tasks = await Task.find({ user: req.user._id }).sort({ createdAt: -1 });
         res.status(200).json(tasks);
     }
     catch (err) {
@@ -25,7 +28,7 @@ exports.getTask = async (req, res) => {
 // getting a specific task
 exports.getSpecificTask = async (req, res) => {
     try {
-        const specificTask = await Task.findById(req.params.id);
+        const specificTask = await Task.findOne({ _id: req.params.id, user: req.user._id });
 
         if (!specificTask) {
             return res.status(404).json({ message: 'Task not found' });
@@ -41,7 +44,9 @@ exports.getSpecificTask = async (req, res) => {
 // updating the tasks (update)
 exports.updateTask = async(req, res) => {
     try {
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const task = await Task.findOneAndUpdate({ _id: req.params.id, user: req.user._id },
+            req.body,
+            { new: true });
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
         }
@@ -55,7 +60,7 @@ exports.updateTask = async(req, res) => {
 // deleting the tasks (delete)
 exports.deleteTask = async (req, res) => {
     try {
-    const task = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findOneAndDelete({ _id: req.params.id, user: req.user._id });
     if (!task) {
         return res.status(404).json({ error: 'Task not found' });
     }
@@ -63,6 +68,29 @@ exports.deleteTask = async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getTaskStats =  async (req, res) => {
+    try {
+        const tasks = await Task.find({ user: req.user._id });
+
+        const total = tasks.length;
+        const completed = tasks.filter(task => task.status === 'completed').length;
+        const pending = total - completed;
+
+        const completionRate = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+        res.json({
+            totalTasks: total,
+            completedTasks: completed,
+            pendingTasks: pending,
+            completionRate
+        });
+    }
+    catch (err) {
+        console.error("Error fetching task stats:", err);
+        res.status(500).json({ message: "Error fetching task stats" });
     }
 };
 
