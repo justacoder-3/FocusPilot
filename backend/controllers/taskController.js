@@ -17,13 +17,32 @@ exports.createTask = async (req, res) => {
 // getting all the tasks (read)
 exports.getTask = async (req, res) => {
     try {
-        const tasks = await Task.find({ user: req.user._id }).sort({ createdAt: -1 });
+        const query = { user: req.user._id };
+
+        if (req.query.status) {
+            query.status = req.query.status;
+        }
+
+        if (req.query.priority) {
+            query.priority = req.query.priority;
+        }
+
+        let sort = {};
+        if (req.query.sortBy === 'dueDate') {
+            sort.dueDate = 1;
+        }
+
+        if (req.query.sortBy === 'createdAt') {
+            sort.createdAt = -1;
+        }
+
+        const tasks = await Task.find(query).sort(sort);
         res.status(200).json(tasks);
     }
     catch (err) {
         res.status(500).json({ error: err.message });
     }
-};
+}
 
 // getting a specific task
 exports.getSpecificTask = async (req, res) => {
@@ -73,6 +92,9 @@ exports.deleteTask = async (req, res) => {
 
 exports.getTaskStats =  async (req, res) => {
     try {
+        const now = new Date();
+        const overdue = tasks.filter(task => task.dueDate && task.dueDate < now && task.status !== 'completed').length;
+
         const tasks = await Task.find({ user: req.user._id });
 
         const total = tasks.length;
@@ -85,6 +107,7 @@ exports.getTaskStats =  async (req, res) => {
             totalTasks: total,
             completedTasks: completed,
             pendingTasks: pending,
+            overdueTasks: overdue,
             completionRate
         });
     }
