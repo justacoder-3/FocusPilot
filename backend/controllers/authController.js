@@ -58,3 +58,12 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+exports.getMyProfile = (req, res) => {
+    res.status(200).json({
+        id: req.user._id,
+        name: req.user.username,
+        email: req.user.email,
+        createdAt: req.user.createdAt
+    });
+};
