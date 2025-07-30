@@ -1,5 +1,4 @@
 const User = require('../models/User.js');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // register function register a new user or tells if he already exists if not new
