@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllTasks } from '../services/taskService.js';
 import TaskCard from '../components/TaskCard.jsx';
+import TaskForm from "../components/TaskForm.jsx";
 
 const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
@@ -18,9 +19,16 @@ const Dashboard = () => {
         fetchTasks(); 
     }, []);
 
+const handleTaskCreated = (newTask) => {
+    setTasks(prev => [newTask, ...prev]);
+};
+
     return (
         <div>
             <h1>Welcome to your DashBoard</h1>
+
+            <TaskForm onTaskCreated={handleTaskCreated} />
+
             <div>
                 {tasks.map(task => (
                     <TaskCard key={task._id} task={task} />
